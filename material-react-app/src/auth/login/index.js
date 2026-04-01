@@ -10,8 +10,7 @@ import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
 
 // @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GoogleIcon from "@mui/icons-material/Google";
 
 // Material Dashboard 2 React components
@@ -29,8 +28,23 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 function Login() {
   const authContext = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Handle LinkedIn OAuth Callback
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    const onboarding = params.get("hasCompletedOnboarding") === "true";
+
+    if (token) {
+      authContext.login(token, onboarding);
+    }
+  }, [location]);
 
   const [user, setUser] = useState({});
   const [credentialsErros, setCredentialsError] = useState(null);
@@ -124,15 +138,14 @@ function Login() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign in
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
+              <MDTypography 
+                component={MuiLink} 
+                href={`${process.env.REACT_APP_API_URL}/auth/linkedin`} 
+                variant="body1" 
+                color="white"
+              >
+                <LinkedInIcon color="inherit" />
               </MDTypography>
             </Grid>
             <Grid item xs={2}>
@@ -140,7 +153,6 @@ function Login() {
                 <GoogleIcon color="inherit" />
               </MDTypography>
             </Grid>
-          </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" method="POST" onSubmit={submitHandler}>

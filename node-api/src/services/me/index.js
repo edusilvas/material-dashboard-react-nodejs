@@ -20,6 +20,8 @@ export const getProfileRouteHandler = (req, res) => {
         name: meUser.name,
         email: meUser.email,
         profile_image: null,
+        hasCompletedOnboarding: meUser.hasCompletedOnboarding || false,
+        profileType: meUser.profileType || "USER",
         createdAt: meUser.createdAt,
         updateAt: meUser.updateAt
       },
@@ -46,7 +48,7 @@ export const patchProfileRouteHandler = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(newPassword, salt);
       try{
-        await userModel.updateOne( { email: foundUser.email }, { $set :{ "name": name, "email": email, "password": hashPassword } });
+        await userModel.updateOne( { email: foundUser.email }, { $set :{ "name": name, "email": email, "password": hashPassword, "hasCompletedOnboarding": true } });
       } catch(err) {
         console.error(err);
       }
@@ -58,13 +60,14 @@ export const patchProfileRouteHandler = async (req, res) => {
             name: name,
             email: email,
             profile_image: null,
+            hasCompletedOnboarding: true
           }
         }
       }
       res.send(sentData);
     } else if (!newPassword) {
       try {
-        await userModel.updateOne( { email: foundUser.email }, { $set :{ "name": name, "email": email } });
+        await userModel.updateOne( { email: foundUser.email }, { $set :{ "name": name, "email": email, "hasCompletedOnboarding": true } });
       } catch(err) {
         console.error(err);
       }
@@ -76,6 +79,7 @@ export const patchProfileRouteHandler = async (req, res) => {
             name: name,
             email: email,
             profile_image: null,
+            hasCompletedOnboarding: true
           }
         }
       }

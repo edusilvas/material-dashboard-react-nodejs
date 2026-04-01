@@ -30,13 +30,15 @@ const MaterialUI = createContext();
 // authentication context
 export const AuthContext = createContext({
   isAuthenticated: false,
+  hasCompletedOnboarding: false,
   login: () => {},
   register: () => {},
   logout: () => {},
+  setCompletedOnboarding: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,31 +48,44 @@ const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     if (!token) return;
 
-    setIsAuthenticated(true);
-    navigate(location.pathname);
+    // Fetch initial profile status
+    const syncStatus = async () => {
+      try {
+        const response = await AuthService.getProfile();
+        const status = response.data.attributes.hasCompletedOnboarding;
+        setHasCompletedOnboarding(status);
+        setIsAuthenticated(true);
+        
+        // Se estiver autenticado mas sem onboarding, força o perfil
+        if (!status && location.pathname !== "/profile") {
+          navigate("/profile");
+        }
+      } catch (err) {
+        logout();
+      }
+    };
+    
+    syncStatus();
   }, []);
 
-  useEffect(() => {
-    if (!token) return;
-
-    setIsAuthenticated(isAuthenticated);
-    navigate(location.pathname);
-  }, [isAuthenticated]);
-
-  const login = (token) => {
+  const login = (token, completedOnboarding = false) => {
     localStorage.setItem("token", token);
     setIsAuthenticated(true);
-    navigate("/dashboard");
+    setHasCompletedOnboarding(completedOnboarding);
+    
+    if (completedOnboarding) {
+      navigate("/dashboard");
+    } else {
+      navigate("/profile");
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setIsAuthenticated(false);
-    navigate("/auth/login");
+  const setCompletedOnboarding = (status) => {
+    setHasCompletedOnboarding(status);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, hasCompletedOnboarding, login, logout, setCompletedOnboarding }}>
       {children}
     </AuthContext.Provider>
   );

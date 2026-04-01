@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
+import AuthService from "services/auth-service";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -41,6 +42,23 @@ import backgroundImage from "assets/images/bg-profile.jpeg";
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+  const [userInfo, setUserInfo] = useState({ name: "", profileType: "" });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await AuthService.getProfile();
+        const user = response.data.attributes;
+        setUserInfo({
+          name: user.name,
+          profileType: user.profileType || "USER"
+        });
+      } catch (err) {
+        console.error("Erro ao buscar dados do cabeçalho:", err);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -99,10 +117,10 @@ function Header({ children }) {
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                Richard Davis
+                {userInfo.name || "Carregando..."}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
+                {userInfo.profileType}
               </MDTypography>
             </MDBox>
           </Grid>

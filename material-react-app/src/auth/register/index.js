@@ -29,6 +29,7 @@ function Register() {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     agree: false,
   });
 
@@ -36,6 +37,7 @@ function Register() {
     nameError: false,
     emailError: false,
     passwordError: false,
+    confirmPasswordError: false,
     agreeError: false,
     error: false,
     errorText: "",
@@ -68,6 +70,11 @@ function Register() {
       return;
     }
 
+    if (inputs.password !== inputs.confirmPassword) {
+      setErrors({ ...errors, confirmPasswordError: true, errorText: "As senhas não coincidem" });
+      return;
+    }
+
     if (inputs.agree === false) {
       setErrors({ ...errors, agreeError: true });
       return;
@@ -95,12 +102,13 @@ function Register() {
 
     try {
       const response = await AuthService.register(myData);
-      authContext.login(response.access_token, response.refresh_token);
+      authContext.login(response.access_token, response.hasCompletedOnboarding || false);
 
       setInputs({
         name: "",
         email: "",
         password: "",
+        confirmPassword: "",
         agree: false,
       });
 
@@ -190,7 +198,7 @@ function Register() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Senha"
                 variant="standard"
                 fullWidth
                 name="password"
@@ -200,7 +208,24 @@ function Register() {
               />
               {errors.passwordError && (
                 <MDTypography variant="caption" color="error" fontWeight="light">
-                  The password must be of at least 8 characters
+                  A senha deve ter pelo menos 8 caracteres
+                </MDTypography>
+              )}
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="password"
+                label="Confirmar Senha"
+                variant="standard"
+                fullWidth
+                name="confirmPassword"
+                value={inputs.confirmPassword}
+                onChange={changeHandler}
+                error={errors.confirmPasswordError}
+              />
+              {errors.confirmPasswordError && (
+                <MDTypography variant="caption" color="error" fontWeight="light">
+                  As senhas não coincidem
                 </MDTypography>
               )}
             </MDBox>
@@ -238,7 +263,7 @@ function Register() {
             )}
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                sign in
+                Avançar
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

@@ -7,8 +7,9 @@ const userSchema = new mongoose.Schema({
   password: { required: true, type: String },
   profile_image: { type: String },
   isBanned: { type: Boolean, default: false },
+  hasCompletedOnboarding: { type: Boolean, default: false },
   credits: { type: Number, default: 0 },
-  profileType: { type: String, enum: ["FREE", "PREMIUM"], default: "FREE" },
+  profileType: { type: String, enum: ["USER", "ADMIN", "PREMIUM", "FREE"], default: "USER" },
   linkedIds: {
     linkedin: String,
     google: String

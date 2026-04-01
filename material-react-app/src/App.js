@@ -132,7 +132,10 @@ export default function App() {
             exact
             path={route.route}
             element={
-              <ProtectedRoute isAuthenticated={authContext.isAuthenticated}>
+              <ProtectedRoute 
+                isAuthenticated={authContext.isAuthenticated}
+                hasCompletedOnboarding={authContext.hasCompletedOnboarding}
+              >
                 {route.component}
               </ProtectedRoute>
             }
@@ -282,7 +285,10 @@ export default function App() {
               exact
               path="user-profile"
               element={
-                <ProtectedRoute isAuthenticated={authContext.isAuthenticated}>
+                <ProtectedRoute 
+                  isAuthenticated={authContext.isAuthenticated}
+                  hasCompletedOnboarding={authContext.hasCompletedOnboarding}
+                >
                   <UserProfile />
                 </ProtectedRoute>
               }
@@ -292,7 +298,10 @@ export default function App() {
               exact
               path="user-management"
               element={
-                <ProtectedRoute isAuthenticated={authContext.isAuthenticated}>
+                <ProtectedRoute 
+                  isAuthenticated={authContext.isAuthenticated}
+                  hasCompletedOnboarding={authContext.hasCompletedOnboarding}
+                >
                   <UserManagement />
                 </ProtectedRoute>
               }

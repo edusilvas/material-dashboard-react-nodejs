@@ -9,6 +9,12 @@ import MDBadge from "components/MDBadge";
 import adminService from "services/admin.service";
 import MDButton from "components/MDButton";
 
+// Material Dashboard 2 React example components
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Footer from "examples/Footer";
+import DataTable from "examples/Tables/DataTable";
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +58,7 @@ const UserManagement = () => {
   const columns = [
     { Header: "Usuário", accessor: "user", width: "30%", align: "left" },
     { Header: "Tipo", accessor: "type", align: "left" },
+    { Header: "Onboarding", accessor: "onboarding", align: "center" },
     { Header: "Créditos", accessor: "credits", align: "center" },
     { Header: "Status", accessor: "status", align: "center" },
     { Header: "Ações", accessor: "action", align: "center" },
@@ -71,8 +78,18 @@ const UserManagement = () => {
     ),
     type: (
       <MDTypography variant="caption" color="text" fontWeight="medium">
-        {u.profileType}
+        {u.profileType === "USER" ? "USUÁRIO" : u.profileType}
       </MDTypography>
+    ),
+    onboarding: (
+      <MDBox ml={-1}>
+        <MDBadge 
+          badgeContent={u.hasCompletedOnboarding ? "CONCLUÍDO" : "PENDENTE"} 
+          color={u.hasCompletedOnboarding ? "success" : "warning"} 
+          variant="gradient" 
+          size="sm" 
+        />
+      </MDBox>
     ),
     credits: (
       <MDTypography variant="caption" color="text" fontWeight="medium">

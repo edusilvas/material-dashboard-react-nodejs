@@ -29,8 +29,13 @@ export const loginRouteHandler = async (req, res, email, password) => {
     if (validPassword) {
       // Generate JWT token
       const token = jwt.sign(
-        { id: foundUser.id, email: foundUser.email },
-        "token",
+        { 
+          id: foundUser.id, 
+          email: foundUser.email,
+          hasCompletedOnboarding: foundUser.hasCompletedOnboarding || false,
+          profileType: foundUser.profileType || "USER"
+        },
+        process.env.JWT_SECRET || "jobflow_secret_key",
         {
           expiresIn: "24h",
         }
@@ -40,6 +45,7 @@ export const loginRouteHandler = async (req, res, email, password) => {
         expires_in: "24h",
         access_token: token,
         refresh_token: token,
+        hasCompletedOnboarding: foundUser.hasCompletedOnboarding || false
       });
     } else {
       return res.status(400).json({
@@ -76,14 +82,24 @@ export const registerRouteHandler = async (req, res, name, email, password) => {
   await newUser.save();
 
   // Generate JWT token
-  const token = jwt.sign({ id: newUser.id, email: newUser.email }, "token", {
-    expiresIn: "24h",
-  });
+  const token = jwt.sign(
+    { 
+      id: newUser.id, 
+      email: newUser.email,
+      hasCompletedOnboarding: false,
+      profileType: "USER"
+    }, 
+    process.env.JWT_SECRET || "jobflow_secret_key", 
+    {
+      expiresIn: "24h",
+    }
+  );
   return res.status(200).json({
     token_type: "Bearer",
     expires_in: "24h",
     access_token: token,
     refresh_token: token,
+    hasCompletedOnboarding: false
   });
 };
 
