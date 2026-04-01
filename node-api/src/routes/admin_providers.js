@@ -1,10 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
-import passport from "passport";
+import { adminAuth } from "../middleware/auth";
 
 const router = express.Router();
 
-router.use(passport.authenticate("jwt", { session: false }));
+router.use(adminAuth);
 
 /**
  * Listagem de todos os provedores Nexus

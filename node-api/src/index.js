@@ -32,10 +32,11 @@ dbConnect();
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ type: "application/vnd.api+json", strict: false }));
 
-app.get("/", function (req, res) {
-  const __dirname = fs.realpathSync(".");
-  res.sendFile(path.join(__dirname, "/src/landing/index.html"));
-});
+const __dirname = fs.realpathSync(".");
+const buildPath = path.join(__dirname, "../material-react-app/build");
+
+// Serve static files from the React app build folder
+app.use(express.static(buildPath));
 
 app.use("/", authRoutes);
 app.use("/me", meRoutes);
@@ -43,6 +44,11 @@ app.use("/kpi", kpiRoutes);
 app.use("/admin/users", adminUserRoutes);
 app.use("/admin/providers", providerRoutes);
 app.use("/admin/emails", adminEmailRoutes);
+
+// Catch-all route to serve index.html for client-side routing (SPAs)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(buildPath, "index.html"));
+});
 
 if (process.env.SCHEDULE_HOUR) {
   cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *'`, () => {

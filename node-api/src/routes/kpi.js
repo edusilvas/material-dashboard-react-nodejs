@@ -1,13 +1,14 @@
 import express from "express";
 import KPIOrchestrator from "../services/KPIOrchestrator";
-import passport from "passport";
+import { adminAuth } from "../middleware/auth";
 
 const router = express.Router();
 
 /**
  * [SECURITY_GATE] Todos os endpoints de KPI exigem autenticação administrativa.
+ * Respeita o bypass definido em BYPASS_AUTH_GATE.
  */
-router.use(passport.authenticate("jwt", { session: false }));
+router.use(adminAuth);
 
 router.get("/funnel/registration", async (req, res) => {
   try {

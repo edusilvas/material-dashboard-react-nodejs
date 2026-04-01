@@ -1,0 +1,15 @@
+{
+  "name": "jobflow-admin-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "material-react-app",
+    "node-api"
+  ],
+  "scripts": {
+    "build:frontend": "npm run build --prefix material-react-app",
+    "start:backend": "npm run start:prod --prefix node-api",
+    "start": "npm run start:backend",
+    "build": "npm run build:frontend"
+  }
+}
