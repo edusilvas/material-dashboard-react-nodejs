@@ -1,6 +1,6 @@
 import express from "express";
-import { emailTemplateModel } from "../schemas/emailTemplate.schema";
-import { adminAuth } from "../middleware/auth";
+import { emailTemplateModel } from "../schemas/emailTemplate.schema.js";
+import { adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 

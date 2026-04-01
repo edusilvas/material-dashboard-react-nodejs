@@ -1,6 +1,6 @@
 import express from "express";
-import KPIOrchestrator from "../services/KPIOrchestrator";
-import { adminAuth } from "../middleware/auth";
+import KPIOrchestrator from "../services/KPIOrchestrator.js";
+import { adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 

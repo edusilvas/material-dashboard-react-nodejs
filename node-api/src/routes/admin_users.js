@@ -1,6 +1,6 @@
 import express from "express";
-import { userModel } from "../schemas/user.schema";
-import { adminAuth } from "../middleware/auth";
+import { userModel } from "../schemas/user.schema.js";
+import { adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 

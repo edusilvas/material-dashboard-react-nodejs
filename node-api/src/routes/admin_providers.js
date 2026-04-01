@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import { adminAuth } from "../middleware/auth";
+import { adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
