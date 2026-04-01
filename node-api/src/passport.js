@@ -1,9 +1,10 @@
 import passport from "passport";
 import { Strategy as LinkedInStrategy } from "passport-linkedin-oauth2";
-import jwt from "jsonwebtoken";
+import passportJwt from "passport-jwt";
+import dotenv from "dotenv";
 
+const { Strategy: JWTStrategy, ExtractJwt } = passportJwt;
 import { userModel } from "./schemas/user.schema.js";
-const JWTStrategy = passportJWT.Strategy;
 dotenv.config();
 
 passport.use(
