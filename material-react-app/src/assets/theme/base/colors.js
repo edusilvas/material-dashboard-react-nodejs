@@ -21,7 +21,7 @@ Coded by www.creative-tim.com
 
 const colors = {
   background: {
-    default: "#f0f2f5",
+    default: "#050505",
   },
 
   text: {
@@ -45,23 +45,23 @@ const colors = {
   },
 
   primary: {
-    main: "#e91e63",
-    focus: "#e91e63",
+    main: "#FF6B00",
+    focus: "#FF8533",
   },
 
   secondary: {
-    main: "#7b809a",
-    focus: "#8f93a9",
+    main: "#1A1A1A",
+    focus: "#262626",
   },
 
   info: {
-    main: "#1A73E8",
-    focus: "#1662C4",
+    main: "#00FFFF",
+    focus: "#33FFFF",
   },
 
   success: {
-    main: "#4CAF50",
-    focus: "#67bb6a",
+    main: "#10B981",
+    focus: "#34D399",
   },
 
   warning: {
@@ -70,8 +70,8 @@ const colors = {
   },
 
   error: {
-    main: "#F44335",
-    focus: "#f65f53",
+    main: "#CC1016",
+    focus: "#E5121B",
   },
 
   light: {
@@ -80,8 +80,8 @@ const colors = {
   },
 
   dark: {
-    main: "#344767",
-    focus: "#2c3c58",
+    main: "#050505",
+    focus: "#0A0A0A",
   },
 
   grey: {

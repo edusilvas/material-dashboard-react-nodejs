@@ -39,6 +39,10 @@ app.get("/", function (req, res) {
 
 app.use("/", authRoutes);
 app.use("/me", meRoutes);
+app.use("/kpi", kpiRoutes);
+app.use("/admin/users", adminUserRoutes);
+app.use("/admin/providers", providerRoutes);
+app.use("/admin/emails", adminEmailRoutes);
 
 if (process.env.SCHEDULE_HOUR) {
   cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *'`, () => {

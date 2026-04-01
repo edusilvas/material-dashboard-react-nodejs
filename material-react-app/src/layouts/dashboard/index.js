@@ -34,8 +34,44 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import { useState, useEffect } from "react";
+import kpiService from "services/kpi.service";
 
 function Dashboard() {
+  const [stats, setStats] = useState({
+    mrr: "0.00",
+    revenueGrowth: "+0%",
+    totalUsers: 0,
+    regFunnel: { rate: 0, completed: 0 },
+    payFunnel: { conversionRate: 0, intents: 0 },
+    roi: { costPerApplication: 0, totalApplied: 0 }
+  });
+
+  useEffect(() => {
+    const fetchKPIs = async () => {
+      try {
+        const [revenue, reg, pay, roi] = await Promise.all([
+          kpiService.getRevenueMRR(),
+          kpiService.getRegistrationFunnel(),
+          kpiService.getPaymentFunnel(),
+          kpiService.getCreditROI()
+        ]);
+        
+        setStats({
+          mrr: revenue.mrr,
+          totalUsers: revenue.totalUsers,
+          regFunnel: reg,
+          payFunnel: pay,
+          roi: roi,
+          revenueGrowth: "+5%" // Placeholder for growth calculation
+        });
+      } catch (e) {
+        console.error("FALHA_AO_CARREGAR_KPIS", e);
+      }
+    };
+    fetchKPIs();
+  }, []);
+
   const { sales, tasks } = reportsLineChartData;
 
   return (
@@ -47,13 +83,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                icon="people"
+                title="Total de Usuários"
+                count={stats.totalUsers}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  amount: "",
+                  label: "Base JobFlow Atlas",
                 }}
               />
             </MDBox>
@@ -62,12 +98,12 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                title="Conversão Cadastro"
+                count={`${stats.regFunnel.rate}%`}
                 percentage={{
                   color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  amount: stats.regFunnel.completed,
+                  label: "Perfis completos",
                 }}
               />
             </MDBox>
@@ -76,13 +112,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
+                icon="payments"
+                title="Receita (MRR)"
+                count={`R$ ${stats.mrr}`}
                 percentage={{
                   color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  amount: stats.revenueGrowth,
+                  label: "vs mês anterior",
                 }}
               />
             </MDBox>
@@ -91,13 +127,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
+                icon="analytics"
+                title="ROI (Custo/App)"
+                count={`$${stats.roi.costPerApplication}`}
                 percentage={{
                   color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  amount: stats.roi.totalApplied,
+                  label: "Candidaturas totais",
                 }}
               />
             </MDBox>
