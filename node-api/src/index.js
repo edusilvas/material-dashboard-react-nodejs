@@ -2,6 +2,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+
 import "./passport.js";
 import { dbConnect } from "./mongo/index.js";
 import { meRoutes, authRoutes, kpiRoutes, adminUserRoutes, providerRoutes, adminEmailRoutes } from "./routes/index.js";
@@ -9,8 +11,6 @@ import path from "path";
 import * as fs from "fs";
 import cron from "node-cron";
 import ReseedAction from "./mongo/ReseedAction.js";
-
-dotenv.config();
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -51,7 +51,7 @@ app.get("*", (req, res) => {
 });
 
 if (process.env.SCHEDULE_HOUR) {
-  cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *'`, () => {
+  cron.schedule(`0 */${process.env.SCHEDULE_HOUR} * * *`, () => {
     ReseedAction();
   });
 }
