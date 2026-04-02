@@ -36,10 +36,14 @@ dbConnect();
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ type: "application/vnd.api+json", strict: false }));
 
-const __dirname = fs.realpathSync(".");
-const buildPath = path.join(__dirname, "../material-react-app/build");
-
 // Serve static files from the React app build folder
+console.log(`[CONFIG] Caminho do Build: ${buildPath}`);
+if (fs.existsSync(buildPath)) {
+  console.log("✅ [BUILD] Pasta de build encontrada.");
+} else {
+  console.log("❌ [BUILD] Pasta de build NÃO ENCONTRADA no caminho especificado.");
+}
+
 app.use(express.static(buildPath));
 
 app.use("/", authRoutes);
@@ -51,7 +55,13 @@ app.use("/admin/emails", adminEmailRoutes);
 
 // Catch-all route to serve index.html for client-side routing (SPAs)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(buildPath, "index.html"));
+  const indexPath = path.join(buildPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    console.error(`❌ [404] index.html não encontrado em: ${indexPath}`);
+    res.status(404).send("Front-end build not found. Please run build script.");
+  }
 });
 
 if (process.env.SCHEDULE_HOUR) {
