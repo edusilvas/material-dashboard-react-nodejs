@@ -13,7 +13,7 @@ export const setupAxiosInterceptors = (onUnauthenticated) => {
   const onResponseSuccess = (response) => response;
 
   const onResponseFail = (error) => {
-    const status = error.status || error.response.status;
+    const status = error?.status || error?.response?.status;
     if (status === 403 || status === 401) {
       onUnauthenticated();
     }

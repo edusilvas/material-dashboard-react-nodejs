@@ -27,6 +27,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
 
+import AuthService from "../services/auth-service";
+
 // authentication context
 export const AuthContext = createContext({
   isAuthenticated: false,
@@ -38,12 +40,19 @@ export const AuthContext = createContext({
 });
 
 const AuthContextProvider = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(!!token);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const token = localStorage.getItem("token");
+  const logout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    setHasCompletedOnboarding(false);
+    navigate("/auth/login");
+  };
 
   useEffect(() => {
     if (!token) return;
@@ -66,7 +75,7 @@ const AuthContextProvider = ({ children }) => {
     };
     
     syncStatus();
-  }, []);
+  }, [token, location.pathname]);
 
   const login = (token, completedOnboarding = false) => {
     localStorage.setItem("token", token);
