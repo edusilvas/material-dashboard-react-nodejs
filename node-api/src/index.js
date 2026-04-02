@@ -15,7 +15,11 @@ import ReseedAction from "./mongo/ReseedAction.js";
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-const whitelist = [process.env.APP_URL_CLIENT];
+const whitelist = [
+  process.env.APP_URL_CLIENT,
+  "https://admin.jobflow.shop",
+  "https://jobflow-admin-production.up.railway.app"
+].filter(url => !!url);
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || whitelist.indexOf(origin) !== -1) {
